@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Roboto, Source_Sans_3 } from "next/font/google";
+import { PreloadResources } from "./preload-resources";
 import "./globals.css";
 
 const roboto = Roboto({
@@ -28,8 +29,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${roboto.variable} ${sourceSans3.variable}`}>
-        {children}
+      <PreloadResources />
+      <body
+        className={`${roboto.variable} ${sourceSans3.variable} bg-slate-200`}
+      >
+        <div className="w-full max-w-[382px] m-auto mt-10 bg-white py-10 px-7 rounded-2xl shadow-md">
+          {children}
+        </div>
       </body>
     </html>
   );

@@ -1,6 +1,11 @@
 import { ReactNode, type SVGProps } from "react";
 
-type IconName = "appointment" | "arrow-left" | "eye-off" | "eye-on" | "map";
+export type IconName =
+  | "appointment"
+  | "arrow-left"
+  | "eye-off"
+  | "eye-on"
+  | "map";
 
 type IconProps = Readonly<{
   name: IconName;
@@ -15,6 +20,14 @@ export function Icon({
   ...props
 }: SVGProps<SVGSVGElement> & IconProps) {
   if (children) {
+    return (
+      <span
+        className={`inline-flex items-center text-sm gap-1 ${childrenClassName}`}
+      >
+        <Icon name={name} {...props} />
+        {children}
+      </span>
+    );
   }
 
   return (
