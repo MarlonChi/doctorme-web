@@ -50,7 +50,7 @@ export default function SignIn() {
         <p>
           Não está cadastrado?{" "}
           <Link
-            href="/signup"
+            href="/sign-up"
             className="text-green-600 font-semibold underline"
           >
             Crie sua conta
