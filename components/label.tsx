@@ -3,9 +3,9 @@ import { HTMLAttributes, forwardRef } from "react";
 export interface LabelProps extends HTMLAttributes<HTMLLabelElement> {}
 
 const Label = forwardRef<HTMLLabelElement, LabelProps>(
-  ({ children, id, ...props }, ref) => {
+  ({ children, ...props }, ref) => {
     return (
-      <label ref={ref} htmlFor={id} {...props}>
+      <label ref={ref} {...props}>
         {children}
       </label>
     );

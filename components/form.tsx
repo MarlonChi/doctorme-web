@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, LabelHTMLAttributes } from "react";
+import { InputHTMLAttributes, LabelHTMLAttributes, useId } from "react";
 import { Label } from "./label";
 import { Input } from "./input";
 
@@ -9,10 +9,13 @@ export function Field({
   labelProps: LabelHTMLAttributes<HTMLLabelElement>;
   inputProps: InputHTMLAttributes<HTMLInputElement>;
 }) {
+  const idFallback = useId();
+  const id = inputProps.id ?? idFallback;
+
   return (
     <div className="flex flex-col">
-      <Label {...labelProps} />
-      <Input {...inputProps} />
+      <Label htmlFor={id} {...labelProps} />
+      <Input id={id} {...inputProps} />
     </div>
   );
 }

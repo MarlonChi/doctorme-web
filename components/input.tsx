@@ -3,8 +3,15 @@ import { HTMLProps, forwardRef } from "react";
 export interface InputProps extends HTMLProps<HTMLInputElement> {}
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ type, ...props }, ref) => {
-    return <input type={type} ref={ref} {...props} />;
+  ({ type, className, ...props }, ref) => {
+    return (
+      <input
+        className={`border border-gray-200 p-[15px] rounded-xl ${className}`}
+        type={type}
+        ref={ref}
+        {...props}
+      />
+    );
   }
 );
 
