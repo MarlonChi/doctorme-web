@@ -1,11 +1,35 @@
+"use client";
+
+import { Button } from "@/components/button";
 import { Header } from "@/components/header";
 import { Icon } from "@/components/icon";
 import { formatHour } from "@/other/helper";
 import Image from "next/image";
+import { useState } from "react";
+
+interface AgendaSelectedProps {
+  id: number;
+  date: string;
+}
 
 export default function Doctor({
   params,
 }: Readonly<{ params: { id: string } }>) {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [agendaSelected, setAgendaSelected] =
+    useState<AgendaSelectedProps | null>(null);
+
+  const closeModal = () => setIsModalVisible(false);
+
+  const handleSelectAgenda = (id: number, date: string) => {
+    setAgendaSelected({
+      id,
+      date,
+    });
+
+    setIsModalVisible(true);
+  };
+
   const doctor = {
     firstName: "Vinicius",
     lastName: "Campos",
@@ -103,22 +127,35 @@ export default function Doctor({
           <p>{doctor.address}</p>
         </div>
 
-        <h2 className="p-4 border border-gray-100">Horários disponíveis</h2>
+        <h2 className="p-4 border border-gray-100 text-center">
+          Horários disponíveis
+        </h2>
         <div className="flex flex-col gap-3">
           <div className="flex">
             <div className="w-[90px] h-9 flex items-center font-semibold">
               Hoje
             </div>
-            <Agenda agenda={doctor.agenda} />
+            <Agenda
+              agenda={doctor.agenda}
+              onSelectAgenda={handleSelectAgenda}
+            />
           </div>
           <div className="flex">
             <div className="w-[90px] h-9 flex items-center font-semibold">
               Amanhã
             </div>
-            <Agenda agenda={doctor.agenda} />
+            <Agenda
+              agenda={doctor.agenda}
+              onSelectAgenda={handleSelectAgenda}
+            />
           </div>
         </div>
       </div>
+      <Modal
+        isVisible={isModalVisible}
+        onClose={closeModal}
+        agendaSelected={agendaSelected}
+      />
     </>
   );
 }
@@ -129,22 +166,76 @@ type AgendaProps = {
   availability: boolean;
 };
 
-function Agenda({ agenda }: { agenda: AgendaProps[] }) {
+function Agenda({
+  agenda,
+  onSelectAgenda,
+}: {
+  agenda: AgendaProps[];
+  onSelectAgenda: (id: number, date: string) => void;
+}) {
   return (
     <div className="grid grid-cols-3 gap-3">
       {agenda.map((item) => (
-        <AgendaButton key={item.id} {...item} />
+        <AgendaButton key={item.id} {...item} onClick={onSelectAgenda} />
       ))}
     </div>
   );
 }
 
-function AgendaButton({ id, date, availability }: AgendaProps) {
+function AgendaButton({
+  id,
+  date,
+  availability,
+  onClick,
+}: {
+  id: number;
+  date: string;
+  availability: boolean;
+  onClick: ({ id, date }: AgendaSelectedProps) => void;
+}) {
   if (!availability) return null;
 
   return (
-    <button className="text-sm font-semibold text-green-500 bg-green-100 rounded-md py-3 px-2">
+    <button
+      className="text-sm font-semibold text-green-500 bg-green-100 rounded-md py-3 px-2"
+      onClick={() => onClick({ id, date })}
+    >
       <p>{formatHour(new Date(date))}</p>
     </button>
+  );
+}
+
+function Modal({
+  isVisible,
+  onClose,
+  agendaSelected,
+}: {
+  isVisible: boolean;
+  onClose: () => void;
+  agendaSelected: AgendaSelectedProps | null;
+}) {
+  if (!isVisible) return null;
+
+  const handleOutsideClick = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    if (event.target === event.currentTarget) onClose();
+  };
+
+  return (
+    <div
+      className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-end"
+      onClick={handleOutsideClick}
+    >
+      <div className="bg-white rounded-t-3xl h-full max-h-[286px] w-full max-w-96 mx-auto p-8 text-center gap-8 flex flex-col">
+        <h2 className="font-semibold text-2xl mb-8">
+          Confirmar o agendamento?
+        </h2>
+        <p className="mb-10 text-sm">
+          Agendamento para o dia 03/06/2024 às 15:00
+        </p>
+        <Button>sim, quero confirmar</Button>
+      </div>
+    </div>
   );
 }
